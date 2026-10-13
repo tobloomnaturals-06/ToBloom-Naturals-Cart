@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ToBloom Naturals Shopping Cart</title>
+
+<style>
+
+body {
+
+  font-family: Arial, sans-serif;
+
+  max-width: 800px;
+
+  margin: auto;
+
+  padding: 18px;
+
+  color: #25372b;
+
+  background: #fafaf6;
+
+}
+
+h1 { text-align: center; color: #315c3b; }
+
+.products, .cart {
+
+  background: white;
+
+  border: 1px solid #ddd;
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+  margin: 16px 0;
+
+}
+
+.product {
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid #eee;
+
+}
+
+button {
+
+  padding: 10px 14px;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  margin: 4px;
+
+}
+
+.add, .checkout {
+
+  background: #315c3b;
+
+  color: white;
+
+}
+
+.qty { background: #e9efe8; font-weight: bold; }
+
+.price { color: #315c3b; font-weight: bold; }
+
+</style>
+
+</head>
+
+<body>
+
+<h1>ToBloom Naturals™</h1>
+
+<p style="text-align:center">
+
+Nature’s Goodness, packed for you
+
+</p>
+
+<div class="products">
+
+<h2>Our Products</h2>
+
+<div class="product">
+
+<h3>Turmeric Powder – 100 g</h3>
+
+<p class="price">₹180</p>
+
+<button class="add" onclick="add(0)">Add to Cart</button>
+
+</div>
+
+<div class="product">
+
+<h3>Lemongrass Tea – 30 Tea Bags</h3>
+
+<p class="price" id="teaPrice">Price to be added</p>
+
+<button class="add" onclick="add(1)">Add to Cart</button>
+
+</div>
+
+</div>
+
+<div class="cart">
+
+<h2>🛒 Your Cart (<span id="items">0</span> items)</h2>
+
+<div id="cartItems">Your cart is empty.</div>
+
+<h3>Total: ₹<span id="total">0</span></h3>
+
+<button class="checkout" onclick="checkout()">
+
+Order on WhatsApp
+
+</button>
+
+<p><small>Delivery charges will be confirmed separately.</small></p>
+
+</div>
+
+<script>
+
+const products = [
+
+  {name: "Turmeric Powder 100 g", price: 180},
+
+  {name: "Lemongrass Tea 30 Tea Bags", price: 0}
+
+];
+
+const qty = [0, 0];
+
+function add(i) {
+
+  qty[i]++;
+
+  render();
+
+}
+
+function change(i, amount) {
+
+  qty[i] = Math.max(0, qty[i] + amount);
+
+  render();
+
+}
+
+function render() {
+
+  let html = "";
+
+  let count = 0;
+
+  let total = 0;
+
+  products.forEach((p, i) => {
+
+    if (qty[i] > 0) {
+
+      count += qty[i];
+
+      total += qty[i] * p.price;
+
+      html += `<p>${p.name} — ₹${p.price} each<br>
+
+      <button class="qty" onclick="change(${i},-1)">−</button>
+
+      ${qty[i]}
+
+      <button class="qty" onclick="change(${i},1)">+</button>
+
+      = ₹${qty[i] * p.price}</p>`;
+
+    }
+
+  });
+
+  document.getElementById("cartItems").innerHTML =
+
+    html || "Your cart is empty.";
+
+  document.getElementById("items").textContent = count;
+
+  document.getElementById("total").textContent = total;
+
+}
+
+function checkout() {
+
+  if (!qty.some(n => n > 0)) {
+
+    alert("Please add a product first.");
+
+    return;
+
+  }
+
+  if (qty[1] > 0 && products[1].price <= 0) {
+
+    alert("The store owner must set the tea price first.");
+
+    return;
+
+  }
+
+  const number = "+91 9945691416";
+
+  if (!/^[0-9]{10,15}$/.test(number)) {
+
+    alert("The store owner must add the WhatsApp number first.");
+
+    return;
+
+  }
+
+  let msg = "Hello ToBloom Naturals, I would like to order:\n";
+
+  let total = 0;
+
+  products.forEach((p, i) => {
+
+    if (qty[i] > 0) {
+
+      msg += `${p.name} x ${qty[i]} = ₹${p.price * qty[i]}\n`;
+
+      total += p.price * qty[i];
+
+    }
+
+  });
+
+  msg += `Total: ₹${total}\nPlease confirm delivery charges and payment details.`;
+
+  window.open(
+
+    "https://wa.me/" + number + "?text=" + encodeURIComponent(msg),
+
+    "_blank"
+
+  );
+
+}
+
+</script>
+
+</body>
+
+</html>
+
